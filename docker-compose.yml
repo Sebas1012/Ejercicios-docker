@@ -1,0 +1,31 @@
+# Siempre se deve iniciar el archivo especificando la version de Docker Compose que se va a usar.
+version: '3'
+
+# Se generan los servicios o lista de contenedores a ejecutar y agrupar.
+services:
+# En este caso nuestri primer servicio es la base de datos. Por lo mismo llamamos el servicio como db pero puede ser como queramos.
+  db:
+  # Asignamos los parametros necesarios para el servicio/contenedor. En este caso el nombre del mismo, imagen a usar, volumen a usar y
+  # una variable de entorno que en este caso seria la contraseña paea nuestra base de datos.
+    container_name: postgres-db
+    image: postgres:15.1
+    volumes:
+      - postgres-db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=123456
+
+  # Lo mismo susede en este caso, generamos otro servicio/contenedor que llamamos pgAdmin que es el que nos permitira administrar de manera
+  # visual la base de datos.
+  pgAdmin:
+  # Es importante que usemos depends_on y en nombre del servicio/contenedor que depende ya que de esta manera se instalaran en el orden correspondiente
+    depends_on:
+      - db
+    image: dpage/pgadmin4:6.17
+    ports:
+      - "8080:80"
+    environment:
+      - PGADMIN_DEFAULT_PASSWORD=123456
+      - PGADMIN_DEFAULT_EMAIL=superman@google.com
+        
+volumes:
+  postgres-db: 
